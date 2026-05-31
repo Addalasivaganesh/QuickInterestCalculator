@@ -1,0 +1,10 @@
+# Quick Interest Calculator
+
+A multilingual loan interest calculator with accessibility support.
+
+## Features
+- Simple & compound interest calculation
+- Multilingual UI (English, Hindi, Telugu, etc.)
+- Responsive design for mobile
+- Accessibility with ARIA labels
+- Ready for PWA & Play Store deployment

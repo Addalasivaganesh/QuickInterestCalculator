@@ -1,0 +1,15 @@
+{
+  "name": "Quick Interest Calculator",
+  "short_name": "InterestCalc",
+  "start_url": "public/index.html",
+  "display": "standalone",
+  "background_color": "#f9f9f9",
+  "theme_color": "#0078d7",
+  "icons": [
+    {
+      "src": "assets/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

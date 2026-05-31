@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Interest Calculator</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <!-- Profile Section -->
+  <aside id="profileSection">
+    <h3>My Profile</h3>
+    <label for="language">Change Language:</label>
+    <select id="language" onchange="changeLanguage()" aria-label="Change Language">
+      <option value="en">English</option>
+      <option value="hi">हिन्दी</option>
+      <option value="te">తెలుగు</option>
+      <option value="ta">தமிழ்</option>
+      <option value="kn">ಕನ್ನಡ</option>
+      <option value="ml">മലയാളം</option>
+      <option value="bn">বাংলা</option>
+      <option value="gu">ગુજરાતી</option>
+      <option value="mr">मराठी</option>
+      <option value="pa">ਪੰਜਾਬੀ</option>
+      <option value="or">ଓଡ଼ିଆ</option>
+      <option value="as">অসমীয়া</option>
+      <option value="sa">संस्कृतम्</option>
+    </select>
+    <!--
+    <button id="logoutBtn" class="btn" aria-label="Logout">Logout</button>
+    -->
+  </aside>
+
+  <!-- Calculator Form -->
+  <form class="container" onsubmit="event.preventDefault(); calculate();">
+    <div class="form-group">
+      <label id="loanLabel" for="principal">Loan Amount:</label>
+      <input id="principal" type="number" step="1" placeholder="Enter loan amount" aria-label="Loan Amount" autocomplete="off" class="no-spinner">
+    </div>
+
+    <div class="form-group">
+      <label id="rateLabel" for="rate">Rate of Interest:</label>
+      <select id="rate" aria-label="Rate of Interest"></select>
+    </div>
+
+    <div class="form-group">
+      <label id="startLabel" for="startDate">Start Date:</label>
+      <input id="startDate" type="date" aria-label="Start Date">
+    </div>
+
+    <div class="form-group">
+      <label id="endLabel" for="endDate">End Date:</label>
+      <input id="endDate" type="date" aria-label="End Date">
+    </div>
+
+    <button id="calcBtn" class="btn" aria-label="Calculate">Calculate</button>
+
+    <!-- Future update: Export/Share and Clear History -->
+    <!--
+    <button id="exportBtn" class="btn" type="button" onclick="exportHistory()" aria-label="Export or Share">Export/Share</button>
+    <button id="clearBtn" class="btn" type="button" onclick="clearHistory()" aria-label="Clear History">Clear History</button>
+    -->
+  </form>
+
+  <div id="resultBox" aria-live="polite"></div>
+
+  <!-- Future update: History section -->
+  <!--
+  <h3 id="historyTitle">History</h3>
+  <ul id="historyList"></ul>
+  -->
+</body>
+</html>
