@@ -2,13 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Interest Calculator</title>
+  <title>Quick Interest Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Mobile friendly -->
+  <meta name="description" content="A multilingual interest calculator for loans with simple and compound interest support.">
   <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
 </head>
 <body>
   <!-- Profile Section -->
-  <aside id="profileSection">
+  <aside id="profileSection" aria-label="User Profile">
     <h3>My Profile</h3>
     <label for="language">Change Language:</label>
     <select id="language" onchange="changeLanguage()" aria-label="Change Language">
@@ -26,48 +28,73 @@
       <option value="as">অসমীয়া</option>
       <option value="sa">संस्कृतम्</option>
     </select>
-    <!--
-    <button id="logoutBtn" class="btn" aria-label="Logout">Logout</button>
-    -->
+    <!-- Future: Logout button -->
+    <!-- <button id="logoutBtn" class="btn" aria-label="Logout">Logout</button> -->
   </aside>
 
+  <!-- App Title -->
+  <header>
+    <h1>Quick Interest Calculator</h1>
+  </header>
+
   <!-- Calculator Form -->
-  <form class="container" onsubmit="event.preventDefault(); calculate();">
-    <div class="form-group">
-      <label id="loanLabel" for="principal">Loan Amount:</label>
-      <input id="principal" type="number" step="1" placeholder="Enter loan amount" aria-label="Loan Amount" autocomplete="off" class="no-spinner">
-    </div>
+  <main>
+    <form class="container" aria-label="Interest Calculator Form">
+      <div class="form-group">
+        <label id="loanLabel" for="principal">Loan Amount:</label>
+        <input id="principal" type="number" step="1" placeholder="Enter loan amount" aria-label="Loan Amount" autocomplete="off" required>
+      </div>
 
-    <div class="form-group">
-      <label id="rateLabel" for="rate">Rate of Interest:</label>
-      <select id="rate" aria-label="Rate of Interest"></select>
-    </div>
+      <div class="form-group">
+        <label id="rateLabel" for="rate">Rate of Interest:</label>
+        <select id="rate" aria-label="Rate of Interest" required></select>
+      </div>
 
-    <div class="form-group">
-      <label id="startLabel" for="startDate">Start Date:</label>
-      <input id="startDate" type="date" aria-label="Start Date">
-    </div>
+      <div class="form-group">
+        <label id="startLabel" for="startDate">Start Date:</label>
+        <input id="startDate" type="date" aria-label="Start Date" required>
+      </div>
 
-    <div class="form-group">
-      <label id="endLabel" for="endDate">End Date:</label>
-      <input id="endDate" type="date" aria-label="End Date">
-    </div>
+      <div class="form-group">
+        <label id="endLabel" for="endDate">End Date:</label>
+        <input id="endDate" type="date" aria-label="End Date" required>
+      </div>
 
-    <button id="calcBtn" class="btn" aria-label="Calculate">Calculate</button>
+      <!-- ✅ Corrected Calculate button -->
+       <button id="calcBtn" class="btn" type="button" onclick="calculate()" aria-label="Calculate">
+        Calculate
+      </button>
 
-    <!-- Future update: Export/Share and Clear History -->
-    <!--
-    <button id="exportBtn" class="btn" type="button" onclick="exportHistory()" aria-label="Export or Share">Export/Share</button>
-    <button id="clearBtn" class="btn" type="button" onclick="clearHistory()" aria-label="Clear History">Clear History</button>
-    -->
-  </form>
+    </form>
+    
+    <section id="resultBox" aria-live="polite" role="status">
+      <div class="result-row"><span class="emoji">💰</span><span class="label">Loan Amount</span><span class="colon">:</span><span class="value" id="loanResult"></span></div>
+      <div class="result-row"><span class="emoji">📅</span><span class="label">Loan Taken Date</span><span class="colon">:</span><span class="value" id="startDateResult"></span></div>
+      <div class="result-row"><span class="emoji">📅</span><span class="label">Loan End Date</span><span class="colon">:</span><span class="value" id="endDateResult"></span></div>
+      <div class="result-row"><span class="emoji">⏳</span><span class="label">Duration</span><span class="colon">:</span><span class="value" id="durationResult"></span></div>
+      <div class="result-row"><span class="emoji">📊</span><span class="label">Interest</span><span class="colon">:</span><span class="value" id="interestResult"></span></div>
+      <div class="result-row"><span class="emoji">💵</span><span class="label">Total Amount</span><span class="colon">:</span><span class="value" id="totalResult"></span></div>
+    </section>
 
-  <div id="resultBox" aria-live="polite"></div>
 
-  <!-- Future update: History section -->
-  <!--
-  <h3 id="historyTitle">History</h3>
-  <ul id="historyList"></ul>
-  -->
+
+
+    <section>
+      <h3 id="historyTitle">History</h3>
+      <ul id="historyList"></ul>
+      
+      <button id="clearBtn" class="btn" type="button" onclick="clearHistory()" aria-label="Clear History">
+        Clear History
+      </button>
+      
+      <button id="exportBtn" class="btn" type="button" onclick="exportHistory()" aria-label="Export or Share">
+        Export/Share
+      </button>
+      
+      <button id="printBtn" class="btn" type="button" onclick="printHistory()" aria-label="Print History">
+        Print History
+      </button>
+    </section>
+  </main>
 </body>
 </html>

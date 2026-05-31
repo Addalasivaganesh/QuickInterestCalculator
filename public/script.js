@@ -259,12 +259,15 @@ function populateRateDropdown() {
   if (t.roiOptions) {
     t.roiOptions.forEach(opt => {
       const option = document.createElement("option");
-      option.textContent = opt;
-      option.value = opt;
+      // Split text like "0.25 → 3%" to extract numeric
+      const numeric = parseFloat(opt.split(" ")[0]); 
+      option.textContent = opt;   // visible text in dropdown
+      option.value = numeric;     // numeric value for calculation
       roiSelect.appendChild(option);
     });
   }
 }
+
 
 function changeLanguage() {
   const lang = document.getElementById("language").value;
@@ -292,6 +295,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Apply translations immediately
   applyTranslations();
 
+  // ✅ Render history if exists
+  renderHistory();
+
   // Update dropdown selection to match chosen language
   const langSelect = document.getElementById("language");
   if (langSelect) {
@@ -299,36 +305,195 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+// ✅ Validation helper
+function validateInputs(principal, rateValue, startDate, endDate) {
+  let valid = true;
+
+  if (isNaN(principal) || principal <= 0) {
+    document.getElementById("principal").style.border = "2px solid red";
+    valid = false;
+  } else {
+    document.getElementById("principal").style.border = "";
+  }
+
+  if (isNaN(rateValue)) {
+    document.getElementById("rate").style.border = "2px solid red";
+    valid = false;
+  } else {
+    document.getElementById("rate").style.border = "";
+  }
+
+  if (!startDate || !endDate || endDate <= startDate) {
+    document.getElementById("startDate").style.border = "2px solid red";
+    document.getElementById("endDate").style.border = "2px solid red";
+    valid = false;
+  } else {
+    document.getElementById("startDate").style.border = "";
+    document.getElementById("endDate").style.border = "";
+  }
+
+  return valid;
+}
+
 
 // ✅ Calculator logic
 function calculate() {
   const principal = parseFloat(document.getElementById("principal").value);
-  const rateValue = parseFloat(document.getElementById("rate").value); // dropdown gives numeric value
+  const rateValue = parseFloat(document.getElementById("rate").value);
   const startDate = new Date(document.getElementById("startDate").value);
   const endDate = new Date(document.getElementById("endDate").value);
 
-  if (isNaN(principal) || isNaN(rateValue) || !startDate || !endDate) {
-    alert("Please fill all fields correctly.");
-    return;
+  // ✅ Use validation helper
+  if (!validateInputs(principal, rateValue, startDate, endDate)) {
+    return; // stop if invalid
   }
 
-  // 1 Rupee = 12% annual
+  // Continue with calculation...
   const annualRate = rateValue * 12;
-
   const durationDays = (endDate - startDate) / (1000 * 60 * 60 * 24);
   const interest = principal * (annualRate / 100) * (durationDays / 365);
   const total = principal + interest;
 
-  document.getElementById("resultBox").innerText =
-    `${translations[localStorage.getItem("lang")].interest}: ${interest.toFixed(2)} | ${translations[localStorage.getItem("lang")].total}: ${total.toFixed(2)}`;
+  // Duration breakdown
+  const years = Math.floor(durationDays / 365);
+  const months = Math.floor((durationDays % 365) / 30);
+  const days = Math.floor((durationDays % 365) % 30);
 
-  saveHistory(principal, annualRate, interest, total);
+  const t = translations[localStorage.getItem("lang")];
+  
+  document.getElementById("loanResult").textContent = principal.toFixed(2);
+  document.getElementById("startDateResult").textContent = startDate.toLocaleDateString();
+  document.getElementById("endDateResult").textContent = endDate.toLocaleDateString();
+  document.getElementById("durationResult").textContent = `${years}y ${months}m ${days}d`;
+  document.getElementById("interestResult").textContent = interest.toFixed(2);
+  document.getElementById("totalResult").textContent = total.toFixed(2);
+
+  saveHistory(principal, annualRate, interest, total, startDate, endDate, `${years}y ${months}m ${days}d`);
+
+}
+
+
+function renderHistory() {
+  const historyList = document.getElementById("historyList");
+  if (!historyList) return;
+
+  const history = JSON.parse(localStorage.getItem("calcHistory")) || [];
+  historyList.innerHTML = "";
+
+  if (history.length === 0) {
+    const li = document.createElement("li");
+    li.textContent = "No history yet";
+    li.style.fontStyle = "italic";
+    li.style.color = "#666";
+    historyList.appendChild(li);
+    return;
+  }
+
+  history.forEach(entry => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <div class="result-row"><span class="emoji">💰</span><span class="label">Loan Amount</span><span class="colon">:</span><span class="value">${entry.principal}</span></div>
+      <div class="result-row"><span class="emoji">📅</span><span class="label">Loan Taken Date</span><span class="colon">:</span><span class="value">${entry.startDate}</span></div>
+      <div class="result-row"><span class="emoji">📅</span><span class="label">Loan End Date</span><span class="colon">:</span><span class="value">${entry.endDate}</span></div>
+      <div class="result-row"><span class="emoji">⏳</span><span class="label">Duration</span><span class="colon">:</span><span class="value">${entry.duration}</span></div>
+      <div class="result-row"><span class="emoji">📊</span><span class="label">Interest</span><span class="colon">:</span><span class="value">${entry.interest.toFixed(2)}</span></div>
+      <div class="result-row"><span class="emoji">💵</span><span class="label">Total Amount</span><span class="colon">:</span><span class="value">${entry.total.toFixed(2)}</span></div>
+      <small>Calculated on: ${entry.date}</small>
+    `;
+    historyList.appendChild(li);
+  });
 }
 
 
 // ✅ History functions
-function saveHistory(principal, rate, interest, total) {
-  const history = JSON.parse(localStorage.getItem("calcHistory")) || [];
-  history.push({ principal, rate, interest, total, date: new Date().toLocaleString() });
+function saveHistory(principal, rate, interest, total, startDate, endDate, duration) {
+  let history = JSON.parse(localStorage.getItem("calcHistory")) || [];
+  history.unshift({
+    principal,
+    rate,
+    interest,
+    total,
+    startDate: startDate.toLocaleDateString(),
+    endDate: endDate.toLocaleDateString(),
+    duration,
+    date: new Date().toLocaleString()
+  });
+  history = history.slice(0, 3); // keep only last 3
   localStorage.setItem("calcHistory", JSON.stringify(history));
+
+  renderHistory(); // show on screen
 }
+
+
+function exportHistory() {
+  const history = JSON.parse(localStorage.getItem("calcHistory")) || [];
+  if (history.length === 0) {
+    alert("No history to export.");
+    return;
+  }
+
+  let content = "Interest Calculator History:\n\n";
+  history.forEach(entry => {
+    content += `${entry.date}\nLoan: ${entry.principal}\nRate: ${entry.rate}%\nInterest: ${entry.interest.toFixed(2)}\nTotal: ${entry.total.toFixed(2)}\nStart: ${entry.startDate}\nEnd: ${entry.endDate}\nDuration: ${entry.duration}\n\n`;
+  });
+
+  const blob = new Blob([content], { type: "text/plain" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "interest_history.txt";
+  link.click();
+}
+
+
+
+function printHistory() {
+  const history = JSON.parse(localStorage.getItem("calcHistory")) || [];
+  if (history.length === 0) {
+    alert("No history to print.");
+    return;
+  }
+
+  let printContent = "<h2>Interest Calculator History</h2><ul>";
+  history.forEach(entry => {
+    printContent += `<li>
+      <strong>${entry.date}</strong><br>
+      Loan: ${entry.principal}<br>
+      Rate: ${entry.rate}%<br>
+      Interest: ${entry.interest.toFixed(2)}<br>
+      Total: ${entry.total.toFixed(2)}<br>
+      Start: ${entry.startDate}<br>
+      End: ${entry.endDate}<br>
+      Duration: ${entry.duration}
+    </li>`;
+  });
+  printContent += "</ul>";
+
+  const printWindow = window.open("", "", "width=600,height=400");
+  printWindow.document.write("<html><head><title>Print History</title></head><body>");
+  printWindow.document.write(printContent);
+  printWindow.document.write("</body></html>");
+  printWindow.document.close();
+  printWindow.print();
+}
+
+
+function saveHistory(principal, rate, interest, total, startDate, endDate, duration) {
+  let history = JSON.parse(localStorage.getItem("calcHistory")) || [];
+  history.unshift({
+    principal,
+    rate,
+    interest,
+    total,
+    startDate: startDate.toLocaleDateString(),
+    endDate: endDate.toLocaleDateString(),
+    duration,
+    date: new Date().toLocaleString()
+  });
+  history = history.slice(0, 3); // keep only last 3
+  localStorage.setItem("calcHistory", JSON.stringify(history));
+
+  renderHistory(); // show on screen
+}
+
+
+

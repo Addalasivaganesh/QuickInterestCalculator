@@ -3,16 +3,18 @@ body {
   font-family: Arial, sans-serif;
   margin: 20px;
   background: #f0f2f5; /* subtle background for contrast */
+  line-height: 1.5; /* better readability */
 }
 
 /* Calculator container */
 .container {
-  max-width: 400px;
+  max-width: 600px; /* wider for desktop */
   margin: auto;
   padding: 20px;
   background: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-sizing: border-box;
 }
 
 /* Form groups */
@@ -27,13 +29,14 @@ body {
   color: #333;
 }
 
+/* Inputs & selects */
 .form-group input,
 .form-group select {
   width: 100%;
-  padding: 8px;
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 15px;
   box-sizing: border-box;
 }
 
@@ -42,16 +45,22 @@ body {
   background-color: #0078d7;
   color: white;
   border: none;
-  padding: 10px 16px;
-  margin: 5px 0;
+  padding: 12px 18px;
+  margin: 8px 0;
   cursor: pointer;
   border-radius: 4px;
-  font-size: 14px;
-  transition: background-color 0.2s ease;
+  font-size: 15px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
 .btn:hover {
   background-color: #005a9e;
+  transform: scale(1.02);
+}
+
+.btn:focus {
+  outline: 2px solid #005a9e; /* accessibility focus */
+  outline-offset: 2px;
 }
 
 /* Profile section */
@@ -75,12 +84,13 @@ body {
 /* Result box */
 #resultBox {
   margin-top: 20px;
-  padding: 12px;
+  padding: 14px;
   background: #e9f5ff;
   border: 1px solid #0078d7;
   border-radius: 6px;
   font-weight: bold;
   color: #333;
+  text-align: center;
 }
 
 /* ✅ Remove number input spinners (whole numbers only) */
@@ -98,11 +108,98 @@ input[type=number] {
 }
 
 /* Responsive tweaks */
+@media (max-width: 768px) {
+  .container {
+    max-width: 90%;
+    padding: 15px;
+  }
+}
+
 @media (max-width: 480px) {
   .container {
-    padding: 15px;
+    padding: 12px;
   }
   .btn {
     width: 100%;
+    font-size: 14px;
   }
+  #resultBox {
+    font-size: 14px;
+    padding: 10px;
+  }
+  h1, h2 {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+}
+
+
+#historyList {
+  list-style: none;
+  padding: 0;
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#historyList li {
+  background: #f9f9f9;
+  border: 1px solid #ccc;
+  border-left: 5px solid #0078d7; /* accent color */
+  border-radius: 6px;
+  padding: 12px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#historyList li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+}
+
+.badge {
+  display: inline-block;
+  background: #0078d7;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.result-item {
+  font-family: monospace; /* ensures alignment */
+  margin: 4px 0;
+}
+
+#historyList li {
+  font-family: monospace; /* same alignment for history */
+}
+
+.result-row {
+  display: grid;
+  grid-template-columns: 40px 160px 20px auto; /* emoji | label | colon | value */
+  align-items: center;
+  font-family: monospace;
+  margin: 4px 0;
+}
+
+.result-row .emoji {
+  text-align: center;
+}
+
+.result-row .label {
+  font-weight: bold;
+}
+
+.result-row .colon {
+  text-align: center;
+}
+
+.result-row .value {
+  color: #333;
 }
