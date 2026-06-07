@@ -1,35 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Flatpickr CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+  <!-- Flatpickr JS -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
   <meta charset="UTF-8">
   <title>Quick Interest Calculator</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Mobile friendly -->
-  <meta name="description" content="A multilingual interest calculator for loans with simple and compound interest support.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO Meta Tags -->
+  <meta name="title" content="Quick Interest Calculator - Multilingual Loan & Interest App">
+  <meta name="description" content="Calculate loan interest easily in 13 Indian languages. Export, print, and share your results instantly.">
+  <meta name="keywords" content="interest calculator, loan calculator, EMI, multilingual app, Telugu, Hindi, Tamil, Kannada, Malayalam, Bengali, Gujarati, Marathi, Punjabi, Odia, Assamese, Sanskrit">
+  <meta name="author" content="Siva">
+  <meta name="robots" content="index, follow">
+
+  <!-- Social Sharing -->
+  <meta property="og:title" content="Quick Interest Calculator">
+  <meta property="og:description" content="Calculate loan interest in 13 Indian languages. Export, print, and share results instantly.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yourdomain.com">
+  <meta property="og:image" content="https://yourdomain.com/preview.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Quick Interest Calculator">
+  <meta name="twitter:description" content="Multilingual loan & interest calculator with export and print features.">
+  <meta name="twitter:image" content="https://yourdomain.com/preview.png">
+
   <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
 </head>
 <body>
   <!-- Profile Section -->
   <aside id="profileSection" aria-label="User Profile">
-    <h3>My Profile</h3>
-    <label for="language">Change Language:</label>
-    <select id="language" onchange="changeLanguage()" aria-label="Change Language">
-      <option value="en">English</option>
-      <option value="hi">हिन्दी</option>
-      <option value="te">తెలుగు</option>
-      <option value="ta">தமிழ்</option>
-      <option value="kn">ಕನ್ನಡ</option>
-      <option value="ml">മലയാളം</option>
-      <option value="bn">বাংলা</option>
-      <option value="gu">ગુજરાતી</option>
-      <option value="mr">मराठी</option>
-      <option value="pa">ਪੰਜਾਬੀ</option>
-      <option value="or">ଓଡ଼ିଆ</option>
-      <option value="as">অসমীয়া</option>
-      <option value="sa">संस्कृतम्</option>
-    </select>
-    <!-- Future: Logout button -->
-    <!-- <button id="logoutBtn" class="btn" aria-label="Logout">Logout</button> -->
+    <button id="profileToggle" class="profile-btn">👤</button>
+    <div id="profileContent" class="profile-content">
+      <label for="language">Change Language:</label>
+      <select id="language" onchange="changeLanguage()" aria-label="Change Language">
+        <option value="en">English</option>
+        <option value="hi">हिन्दी</option>
+        <option value="te">తెలుగు</option>
+        <option value="ta">தமிழ்</option>
+        <option value="kn">ಕನ್ನಡ</option>
+        <option value="ml">മലയാളം</option>
+        <option value="bn">বাংলা</option>
+        <option value="gu">ગુજરાતી</option>
+        <option value="mr">मराठी</option>
+        <option value="pa">ਪੰਜਾਬੀ</option>
+        <option value="or">ଓଡ଼ିଆ</option>
+        <option value="as">অসমীয়া</option>
+        <option value="sa">संस्कृतम्</option>
+      </select>
+    </div>
   </aside>
 
   <!-- App Title -->
@@ -42,43 +68,57 @@
     <form class="container" aria-label="Interest Calculator Form">
       <div class="form-group">
         <label id="loanLabel" for="principal">Loan Amount:</label>
-        <input id="principal" type="number" step="1" placeholder="Enter loan amount" aria-label="Loan Amount" autocomplete="off" required>
+        <input id="principal" type="text" placeholder="Enter loan amount" aria-label="Loan Amount" autocomplete="off" required>
       </div>
 
       <div class="form-group">
         <label id="rateLabel" for="rate">Rate of Interest:</label>
-        <select id="rate" aria-label="Rate of Interest" required></select>
+        <input id="rate" list="roiOptions" type="number" step="0.01" min="0" max="5" aria-label="Rate of Interest" required placeholder="Enter ROI">
+        <span id="rateError" style="color:red; font-size:0.9em;"></span>
+        <datalist id="roiOptions">
+          <option value="0.25">0.25 Rupee → 3%</option>
+          <option value="0.50">0.50 Rupee → 6%</option>
+          <option value="0.75">0.75 Rupee → 9%</option>
+          <option value="1.00">1.00 Rupee → 12%</option>
+          <option value="1.25">1.25 Rupee → 15%</option>
+          <option value="1.50">1.50 Rupee → 18%</option>
+          <option value="1.75">1.75 Rupee → 21%</option>
+          <option value="2.00">2.00 Rupee → 24%</option>
+          <option value="2.25">2.25 Rupee → 27%</option>
+          <option value="2.50">2.50 Rupee → 30%</option>
+          <option value="2.75">2.75 Rupee → 33%</option>
+          <option value="3.00">3.00 Rupee → 36%</option>
+        </datalist>
       </div>
 
-      <div class="form-group">
+      <!-- Date Inputs with localized placeholders -->
+      <div class="form-group input-wrapper">
         <label id="startLabel" for="startDate">Start Date:</label>
-        <input id="startDate" type="date" aria-label="Start Date" required>
+        <input id="startDate" type="text" placeholder="తేది - నెల - సంవత్సరం">
       </div>
 
-      <div class="form-group">
+      <div class="form-group input-wrapper">
         <label id="endLabel" for="endDate">End Date:</label>
-        <input id="endDate" type="date" aria-label="End Date" required>
+        <input id="endDate" type="text" placeholder="తేది - నెల - సంవత్సరం">
       </div>
 
-      <!-- ✅ Corrected Calculate button -->
-       <button id="calcBtn" class="btn" type="button" onclick="calculate()" aria-label="Calculate">
+      <!-- Calculate button -->
+      <button id="calcBtn" class="btn" type="button" onclick="calculate()" aria-label="Calculate">
         Calculate
       </button>
-
     </form>
     
+    <!-- Result Box -->
     <section id="resultBox" aria-live="polite" role="status">
-      <div class="result-row"><span class="emoji">💰</span><span class="label">Loan Amount</span><span class="colon">:</span><span class="value" id="loanResult"></span></div>
-      <div class="result-row"><span class="emoji">📅</span><span class="label">Loan Taken Date</span><span class="colon">:</span><span class="value" id="startDateResult"></span></div>
-      <div class="result-row"><span class="emoji">📅</span><span class="label">Loan End Date</span><span class="colon">:</span><span class="value" id="endDateResult"></span></div>
-      <div class="result-row"><span class="emoji">⏳</span><span class="label">Duration</span><span class="colon">:</span><span class="value" id="durationResult"></span></div>
-      <div class="result-row"><span class="emoji">📊</span><span class="label">Interest</span><span class="colon">:</span><span class="value" id="interestResult"></span></div>
-      <div class="result-row"><span class="emoji">💵</span><span class="label">Total Amount</span><span class="colon">:</span><span class="value" id="totalResult"></span></div>
+      <div class="result-row"><span class="emoji">💰</span><span id="loanAmountLabel" class="label">Loan Amount</span><span class="colon">:</span><span class="value" id="loanResult"></span></div>
+      <div class="result-row"><span class="emoji">📅</span><span id="loanTakenDateLabel" class="label">Loan Taken Date</span><span class="colon">:</span><span class="value" id="startDateResult"></span></div>
+      <div class="result-row"><span class="emoji">📅</span><span id="loanEndDateLabel" class="label">Loan End Date</span><span class="colon">:</span><span class="value" id="endDateResult"></span></div>
+      <div class="result-row"><span class="emoji">⏳</span><span id="durationLabel" class="label">Duration</span><span class="colon">:</span><span class="value" id="durationResult"></span></div>
+      <div class="result-row"><span class="emoji">📊</span><span id="interestLabel" class="label">Interest</span><span class="colon">:</span><span class="value" id="interestResult"></span></div>
+      <div class="result-row"><span class="emoji">💵</span><span id="totalAmountLabel" class="label">Total Amount</span><span class="colon">:</span><span class="value" id="totalResult"></span></div>
     </section>
 
-
-
-
+    <!-- History Section -->
     <section>
       <h3 id="historyTitle">History</h3>
       <ul id="historyList"></ul>
