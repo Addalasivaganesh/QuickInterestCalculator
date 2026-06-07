@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://whimsical-truffle-3ffa6f.netlify.app/sitemap.xml
